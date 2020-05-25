@@ -1,4 +1,4 @@
-package com.sxt.demo;
+package com.sxt.office;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
