@@ -4,27 +4,28 @@ import com.sxt.office.common.ActiverUser;
 import com.sxt.office.common.ResultObj;
 import com.sxt.office.common.WebUtils;
 import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.authc.AuthenticationToken;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.subject.Subject;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * @Author tanghua
  * @Date: 2020/5/25 16:01
  * @Version 1.0
  */
-@Controller
+@RestController
 @RequestMapping("/login")
 public class LoginController {
 
 
     @RequestMapping("login")
-    public ResultObj login(String loginname, String password) {
+    public ResultObj login(String loginname, String pwd) {
 
         Subject subject = SecurityUtils.getSubject();
 
-        UsernamePasswordToken token = new UsernamePasswordToken(loginname, password);
+        AuthenticationToken token = new UsernamePasswordToken(loginname, pwd);
 
         try {
             subject.login(token);
