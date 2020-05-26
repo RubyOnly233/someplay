@@ -1,8 +1,8 @@
 package com.sxt.office.service.impl;
 
-import com.sxt.office.sys.domain.Permission;
-import com.sxt.office.sys.mapper.PermissionMapper;
-import com.sxt.office.sys.service.PermissionService;
+import com.sxt.office.domain.Permission;
+import com.sxt.office.mapper.PermissionMapper;
+import com.sxt.office.service.PermissionService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
 

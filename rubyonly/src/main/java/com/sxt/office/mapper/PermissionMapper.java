@@ -1,6 +1,6 @@
 package com.sxt.office.mapper;
 
-import com.sxt.office.sys.domain.Permission;
+import com.sxt.office.domain.Permission;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
 /**
