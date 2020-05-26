@@ -25,4 +25,14 @@ public class SystemController {
     }
 
 
+    /**
+     *  跳转到首页
+     * @return
+     */
+    @RequestMapping("index")
+    public String index() {
+
+        return "system/index/index";
+    }
+
 }
