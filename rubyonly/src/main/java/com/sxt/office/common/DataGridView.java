@@ -22,11 +22,8 @@ public class DataGridView {
     private Long count = 0L;
     private Object data;
 
-    public Object getData() {
-        return data;
-    }
 
-    public void setData(Object data) {
+    public DataGridView(Object data) {
         this.data = data;
     }
 
