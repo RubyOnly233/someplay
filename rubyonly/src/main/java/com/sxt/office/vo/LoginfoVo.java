@@ -17,8 +17,8 @@ import java.util.Date;
 public class LoginfoVo extends Loginfo {
 
     private static final long serialVersionUID = 3575546286426311467L;
-    private Integer limit;
-    private Integer page;
+    private Integer limit = 10;
+    private Integer page = 1;
 
     /**
      *  开始时间
