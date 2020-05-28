@@ -46,4 +46,15 @@ public class SystemController {
         return "system/index/deskManager";
     }
 
+
+    /**
+     *  跳转到日志页面
+     * @return
+     */
+    @RequestMapping("toLoginfoManager")
+    public String toLoginfoManager() {
+
+        return "system/loginfo/loginfoManager";
+    }
+
 }
