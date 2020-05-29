@@ -74,14 +74,14 @@
     </table>
 
     <div id="loginfoToolBar" style="display: none">
-        <button type="button" class="layui-btn layui-btn-sm layui-btn-warm"><span class="layui-icon layui-icon-delete"></span>批量删除</button>
+        <button type="button" lay-event="batchDeleteInfo" class="layui-btn layui-btn-sm layui-btn-warm"><span class="layui-icon layui-icon-delete"></span>批量删除</button>
 
 
     </div>
 
 
     <div id="loginfoRowBar" style="display: none">
-        <button type="button" class="layui-btn layui-btn-sm layui-btn-danger"><span class="layui-icon layui-icon-delete"></span>删除</button>
+        <button type="button" lay-event="deleteInfo" class="layui-btn layui-btn-sm layui-btn-danger"><span class="layui-icon layui-icon-delete"></span>删除</button>
 
     </div>
 
@@ -141,6 +141,86 @@
             });
             return false;
         });
+
+
+        //监听头部事件
+        table.on('toolbar(loginfoTable)', function(obj){
+            switch(obj.event){
+                case 'batchDeleteInfo':
+                    batchDeleteInfo();
+                    break;
+            };
+        });
+
+
+        //监听行部事件
+        table.on('tool(loginfoTable)', function(obj){
+            switch(obj.event){
+                case 'deleteInfo':
+                    deleteInfo(obj.data);
+                    break;
+            };
+        });
+
+
+        function deleteInfo(data) {
+            layer.confirm('你确定要删除吗?', {icon: 3, title:'提示'}, function(index){
+
+                var id = "id=" + data.id;
+
+                $.post("/loginfo/deleteInfo", id, function (res) {
+                    if (res.code == 200) {
+
+                        tableIns.reload();
+                    } else {
+                        layer.msg(res.msg);
+                    }
+
+                });
+
+                layer.close(index);
+            });
+        }
+
+        // 批量删除
+        function batchDeleteInfo(data) {
+
+            var checkStatus = table.checkStatus('loginfoTable'); //idTest 即为基础参数 id 对应的值
+
+            var data = checkStatus.data; //获取选中行的数据
+            var length = checkStatus.data.length; //获取选中行数量，可作为是否有选中行的条件
+            if (length > 0) {
+                layer.confirm('你确定要删除吗?', {icon: 3, title:'提示'}, function(index){
+
+                    var ids = "";
+                    $.each(data, function (index, item) {
+
+                        if (index == 0) {
+                            ids += "ids=" + item.id;
+                        } else {
+                            ids += "&ids="+item.id
+                        }
+                    });
+
+                    $.post("/loginfo/batchDeleteInfo", ids, function (res) {
+                        if (res.code == 200) {
+
+                            tableIns.reload();
+                        } else {
+                            layer.msg(res.msg);
+                        }
+
+                    });
+
+                    layer.close(index);
+                });
+            } else {
+                layer.msg("请选中删除行")
+            }
+
+
+
+        }
 
 
     });
