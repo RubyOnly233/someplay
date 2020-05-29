@@ -20,6 +20,8 @@ public class LoginfoVo extends Loginfo {
     private Integer limit = 10;
     private Integer page = 1;
 
+    private Integer[] ids;
+
     /**
      *  开始时间
      */
