@@ -144,6 +144,82 @@
             });
             return false;
         });
+
+
+        //监听头部事件
+        table.on('toolbar(noticeTable)', function(obj){
+            switch(obj.event){
+                case 'batchDelete':
+                    batchDelete();
+                    break;
+            };
+        });
+
+
+        //监听行部事件
+        table.on('tool(noticeTable)', function(obj){
+            switch(obj.event){
+                case 'delete':
+                    deleteNotice(obj.data);
+                    break;
+            };
+        });
+
+
+        function deleteNotice(data) {
+            layer.confirm('你确定要删除吗?', {icon: 3, title:'提示'}, function(index){
+
+                var id = "id=" + data.id;
+
+                $.post("/notice/deleteNotice", id, function (res) {
+                    if (res.code == 200) {
+
+                        tableIns.reload();
+                    } else {
+                        layer.msg(res.msg);
+                    }
+
+                });
+                layer.close(index);
+            });
+        }
+
+        // 批量删除
+        function batchDelete(data) {
+
+            var checkStatus = table.checkStatus('noticeTable'); //idTest 即为基础参数 id 对应的值
+
+            var data = checkStatus.data; //获取选中行的数据
+            var length = checkStatus.data.length; //获取选中行数量，可作为是否有选中行的条件
+            if (length > 0) {
+                layer.confirm('你确定要删除吗?', {icon: 3, title:'提示'}, function(index){
+
+                    var ids = "";
+                    $.each(data, function (index, item) {
+
+                        if (index == 0) {
+                            ids += "ids=" + item.id;
+                        } else {
+                            ids += "&ids="+item.id
+                        }
+                    });
+
+                    $.post("/notice/batchDeleteNotice", ids, function (res) {
+                        if (res.code == 200) {
+
+                            tableIns.reload();
+                        } else {
+                            layer.msg(res.msg);
+                        }
+
+                    });
+
+                    layer.close(index);
+                });
+            } else {
+                layer.msg("请选中删除行")
+            }
+        }
     })
 
 
