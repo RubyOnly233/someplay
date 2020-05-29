@@ -3,12 +3,17 @@ package com.sxt.office.controller;
 import com.sxt.office.common.ActiverUser;
 import com.sxt.office.common.ResultObj;
 import com.sxt.office.common.WebUtils;
+import com.sxt.office.domain.Loginfo;
+import com.sxt.office.service.LoginfoService;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationToken;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.subject.Subject;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.Date;
 
 /**
  * @Author tanghua
@@ -18,6 +23,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/login")
 public class LoginController {
+
+    @Autowired
+    private LoginfoService loginfoService;
 
 
     @RequestMapping("login")
@@ -35,6 +43,13 @@ public class LoginController {
 
             // 将user存到session去
             WebUtils.getSession().setAttribute("user",activerUser.getUser());
+
+            //记录登录日志
+            Loginfo entity = new Loginfo();
+            entity.setLogintime(new Date());
+            entity.setLoginip(WebUtils.getRequest().getRemoteAddr());
+            entity.setLoginname(activerUser.getUser().getName() + "-" + activerUser.getUser().getLoginname());
+            loginfoService.save(entity);
 
             return ResultObj.LOGIN_SUCCESS;
         } catch (Exception e) {
