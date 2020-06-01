@@ -118,9 +118,22 @@
 
      </form>
  </div>
-<!--添加和修改的弹出层开始-->
+<!--添加和修改的弹出层结束-->
 
+<!--查看公告的弹出层结束-->
+<div style="display: none" id="showNoticeDiv">
 
+    <h2 id="show_title" align="center"></h2>
+    <div style="text-align: left">
+        发布人：<span id="show_opername"></span> <br><br><br>
+        发布时间：<span id="show_createtime"></span>
+    </div>
+    <hr>
+    <div id="show_content">
+
+    </div>
+
+</div>
 
 <script type="text/javascript" src="/resources/layui/layui.js"></script>
 <script>
@@ -287,8 +300,20 @@
         }
 
         // 查看公告
-        function showNotice() {
+        function showNotice(data) {
+            mainIndex = layer.open({
+                type: 1,
+                content:$("#showNoticeDiv"),
+                area:['800px','600px'],
+                title:'查看公告',
+                success:function () {
+                   $("#show_title").html(data.title);
+                   $("#show_opername").html(data.opername);
+                   $("#show_createtime").html(data.createtime);
+                   $("#show_content").html(data.content);
+                }
 
+            });
         }
 
 
