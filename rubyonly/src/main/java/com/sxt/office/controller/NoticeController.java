@@ -6,7 +6,9 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.sxt.office.common.DataGridView;
 import com.sxt.office.common.ResultObj;
+import com.sxt.office.common.WebUtils;
 import com.sxt.office.domain.Notice;
+import com.sxt.office.domain.User;
 import com.sxt.office.service.NoticeService;
 import com.sxt.office.vo.NoticeVo;
 import org.apache.commons.lang3.StringUtils;
@@ -16,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 /**
  * <p>
@@ -102,6 +105,44 @@ public class NoticeController {
             return ResultObj.DELETE_ERROR;
         }
 
+    }
+
+
+    @RequestMapping("addNotice")
+    private ResultObj addNotice(NoticeVo noticeVo) {
+
+        try {
+            noticeVo.setCreatetime(new Date());
+
+            User user = (User) WebUtils.getSession().getAttribute("user");
+            noticeVo.setOpername(user.getName());
+
+            noticeService.save(noticeVo);
+
+            return ResultObj.ADD_SUCCESS;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResultObj.ADD_ERROR;
+        }
+    }
+
+
+    @RequestMapping("updateNotice")
+    private ResultObj updateNotice(NoticeVo noticeVo) {
+
+        try {
+//            noticeVo.setCreatetime(new Date());
+//
+//            User user = (User) WebUtils.getSession().getAttribute("user");
+//            noticeVo.setOpername(user.getName());
+
+            noticeService.updateById(noticeVo);
+
+            return ResultObj.UPDATE_SUCCESS;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResultObj.UPDATE_ERROR;
+        }
     }
 
 }
