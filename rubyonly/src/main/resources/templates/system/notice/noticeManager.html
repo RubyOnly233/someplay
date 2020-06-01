@@ -88,19 +88,51 @@
 </div>
 <!--数据表格结束-->
 
+<!--添加和修改的弹出层开始-->
+ <div style="display: none" id="addOrUpdateDiv">
+
+     <form  action="" method="post" id="dataForm" lay-filter="dataForm" class="layui-form layui-form-pane">
+
+         <div class="layui-form-item">
+             <label class="layui-form-label">公告标题</label>
+             <div class="layui-input-block">
+                 <!--用于修改-->
+                 <input type="hidden" name="id" class="layui-input">
+                 <input type="text" name="title" lay-verify="required" autocomplete="off" placeholder="请输入标题" class="layui-input">
+
+             </div>
+
+         </div>
+
+         <div class="layui-form-item">
+             <label class="layui-form-label">公告内容</label>
+             <div class="layui-input-block">
+                 <textarea class="layui-textarea layui-hide" name="content"  id="content"></textarea>
+             </div>
+         </div>
+
+         <div class="layui-input-block" style="text-align: center">
+             <button type="button" class="layui-btn" lay-submit="" lay-filter="doSubmit"><span class="layui-icon layui-icon-add-1"></span>发布</button>
+             <button type="reset" class="layui-btn layui-btn-warm"><span class="layui-icon layui-icon-refresh-1"></span>重置</button>
+         </div>
+
+     </form>
+ </div>
+<!--添加和修改的弹出层开始-->
 
 
 
 <script type="text/javascript" src="/resources/layui/layui.js"></script>
 <script>
 
-    layui.use(['jquery','form','table','layer','laydate'],function () {
+    layui.use(['jquery','form','table','layer','laydate','layedit'],function () {
 
         var $ = layui.jquery;
         var form = layui.form;
         var table = layui.table;
         var layer = layui.layer;
         var laydate = layui.laydate;
+        var layedit = layui.layedit;
 
         //    初始化时间选择器
         laydate.render({
@@ -152,6 +184,9 @@
                 case 'batchDelete':
                     batchDelete();
                     break;
+                case 'add':
+                    addNotice();
+                    break;
             };
         });
 
@@ -161,6 +196,12 @@
             switch(obj.event){
                 case 'delete':
                     deleteNotice(obj.data);
+                    break;
+                case 'show':
+                    showNotice(obj.data);
+                    break;
+                case 'edit':
+                    editNotice(obj.data);
                     break;
             };
         });
@@ -175,10 +216,8 @@
                     if (res.code == 200) {
 
                         tableIns.reload();
-                    } else {
-                        layer.msg(res.msg);
                     }
-
+                    layer.msg(res.msg);
                 });
                 layer.close(index);
             });
@@ -220,6 +259,83 @@
                 layer.msg("请选中删除行")
             }
         }
+
+        var mainIndex;
+        var editIndex;
+        var url;
+
+        // 添加公告
+        function addNotice() {
+
+            mainIndex = layer.open({
+                type: 1,
+                content:$("#addOrUpdateDiv"),
+                area:['800px','600px'],
+                title:'发布公告',
+                success:function () {
+                    //初始化富文本 , 先弹出，再layedit.build ,避免工具栏错误
+                    editIndex = layedit.build('content');
+                    //初始化  url
+                    url = "/notice/addNotice";
+                    // 清空表单
+                    $("#dataForm")[0].reset();
+                    // 下面方法需修改layedit.js 里面的 layedit.sync(t)
+                    layedit.setContent(editIndex, "");
+                }
+
+            });
+        }
+
+        // 查看公告
+        function showNotice() {
+
+        }
+
+
+        // 编辑公告
+        function editNotice(data) {
+            mainIndex = layer.open({
+                type: 1,
+                content:$("#addOrUpdateDiv"),
+                area:['800px','600px'],
+                title:'修改公告',
+                success:function () {
+                    //初始化富文本 , 先弹出，再layedit.build ,避免工具栏错误
+                    editIndex = layedit.build('content');
+                    //初始化  url
+                    url = "/notice/updateNotice";
+
+                    // 回显数据
+                    form.val("dataForm",data);
+
+                    // 设置文本内容
+                    layedit.setContent(editIndex, data.content);
+
+                }
+
+            });
+        }
+
+        // 添加和修改的提交
+        form.on("submit(doSubmit)", function (data) {
+
+            // 同步富文本和textarea 里面的内容
+            layedit.sync(editIndex);
+
+            data.field.content = layedit.getContent(editIndex);
+
+            $.post(url, data.field, function (res) {
+                if (res.code == 200) {
+
+                    tableIns.reload();
+                }
+                layer.msg(res.msg);
+
+                // 不管成功失败都关闭添加弹出框
+                layer.close(mainIndex);
+            });
+            return false;
+        });
     })
 
 
